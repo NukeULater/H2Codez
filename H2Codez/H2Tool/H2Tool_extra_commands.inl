@@ -450,7 +450,7 @@ static void _cdecl TAG_RENDER_MODEL_IMPORT_PROC(file_reference *file, const datu
 		printf("    == leaving TAG_RENDER_MODEL_IMPORT_PROC\n");
 	}
 }
-static const s_tool_import_definations TAG_RENDER_IMPORT_DEFINATIONS_[] = {
+static const s_tool_import_definitions TAG_RENDER_IMPORT_DEFINATIONS_[] = {
 	{
 	"jms",
 	CAST_PTR(_tool_import__defination_proc,TAG_RENDER_MODEL_IMPORT_PROC),
@@ -536,7 +536,7 @@ static bool _cdecl h2pc_generate_render_model(datum tag, file_reference& FILE_RE
 	if (region->permutations.size == 0)
 		tags::resize_block(&region->permutations, 1);
 
-	if (load_model_object_definations_(&render_model->importInfo, jms_collision_geometry_import_defination_, 1, FILE_REF))
+	if (load_model_object_definitions_(&render_model->importInfo, jms_collision_geometry_import_defination_, 1, FILE_REF))
 	{
 		if (TAG_ADD_IMPORT_INFO_BLOCK(&render_model->importInfo))
 		{
@@ -653,7 +653,7 @@ static bool _cdecl h2pc_import_render_model_proc(wcstring* arguments)
 		{
 			render_model_block *render_model = tags::get_tag<render_model_block>('mode', tag);
 
-			if (!load_model_object_definations_(&render_model->importInfo, jms_collision_geometry_import_defination_, 1, file_reference))
+			if (!load_model_object_definitions_(&render_model->importInfo, jms_collision_geometry_import_defination_, 1, file_reference))
 				return false;
 
 		} else {
@@ -1093,4 +1093,105 @@ static const s_tool_command structure_dump
 	ARRAYSIZE(structure_2_dae),
 	false
 };
+
+// something real fast
+#pragma region some trash code to dump string ids
+
+#define DEFAULT_STRING_IDS_COUNT 2438
+
+struct s_label_to_string_id
+{
+	int string_id;
+	cstring label;
+};
+
+void __cdecl convert_string_id_label(char *label)
+{
+	char *i = label;
+	int length = strlen(label);
+	
+	// got too lazy, just add HS_ before each entry
+	/*for (int j = 0; j < length; j++)
+	{
+		if (isdigit(label[j]))
+		{
+
+		}
+	}*/
+
+	for (; *i != 0; i++)
+	{
+		if (*i >= 'a' && *i <= 'z')
+			*i -= 0x20; //
+		if (*i == ' ' || *i == '-')
+			*i = '_';
+	}
+}
+
+void __cdecl dump_string_ids_command(wchar_t* argv[])
+{
+	auto string_ids = reinterpret_cast<s_label_to_string_id*>(0x82A9C0);
+
+	fs::path path(argv[0]);
+	if (path.has_filename() && path.has_extension())
+	{
+		std::wfstream outFile(path.c_str(), std::ios::out | std::ios::ate);
+
+		if (outFile.is_open())
+		{
+			if (!outFile.tellg() > 0)
+			{
+				outFile.clear();
+			}
+
+			outFile << "enum string_id {\n";
+
+			for (int i = 0; i < DEFAULT_STRING_IDS_COUNT; i++)
+			{
+				char label_to_upper[128 + 1];
+				strncpy(label_to_upper, string_ids[i].label, 128);
+				convert_string_id_label(label_to_upper);
+
+				outFile << "	" << "HS_" << label_to_upper << " = 0x" << std::uppercase << std::hex << string_ids[i].string_id;
+
+				if (i + 1 < DEFAULT_STRING_IDS_COUNT)
+				{
+					outFile << ",\n";
+				}
+			}
+
+			outFile << "\n};";
+
+			outFile.close();
+
+			wprintf(L" dumped string_ids to \"%s\"", path.c_str());
+		}
+		else
+		{
+			wprintf(L" was unable to open \"%s\", aborting", path.c_str());
+		}
+	}
+	else
+	{
+		wprintf(L" \"%s\" is not a file, aborting", path.c_str());
+	}
+}
+
+static const s_tool_command_argument dump_string_ids_arguments[]
+{
+	_tool_command_argument_type_file,
+	L"txt text file",
+	"*.txt",
+	"txt file path you wish to write to"
+};
+
+const s_tool_command dump_string_ids
+{
+	L"dump string ids",
+	CAST_PTR(_tool_command_proc, dump_string_ids_command),
+	dump_string_ids_arguments, NUMBEROF(dump_string_ids_arguments),
+	true
+};
+
+#pragma endregion
 

@@ -17,7 +17,6 @@ using namespace HaloScriptCommon;
 //tool  debug pc 11081.07.04.30.0934.main  Apr 30 2007 09:37:08
 //Credits to Kornmann https://bitbucket.org/KornnerStudios/opensauce-release/wiki/Home
 
-
 static const s_tool_command* h2tool_extra_commands[] = {
 	// commands in tool not added to the command table
 #ifdef _DEBUG
@@ -50,7 +49,8 @@ static const s_tool_command* h2tool_extra_commands[] = {
 	&lightmap_dump,
 	&edit_bitmap,
 	&structure_dump,
-	&lightmap_uv_import
+	&lightmap_uv_import,
+	&dump_string_ids
 };
 
 int __cdecl s_tool_command_compare(void *, const void* lhs, const void* rhs)
@@ -609,7 +609,7 @@ static void patch_max_bitmap_size()
 constexpr uint32_t image_import_with_type_proc = 0x40A390;
 constexpr uint32_t image_import_proc = 0x40A370;
 constexpr uint32_t translate_path_bitmap = 0x409330;
-constexpr s_tool_import_definations_const image_import_defs[] = {
+constexpr s_tool_import_definitions_const image_import_defs[] = {
 	{"tif", image_import_proc, 0, translate_path_bitmap},
 	{"tiff", image_import_proc, 0, translate_path_bitmap},
 	{"tga", image_import_proc, 0, translate_path_bitmap},
@@ -619,7 +619,7 @@ constexpr s_tool_import_definations_const image_import_defs[] = {
 	{"png", image_import_proc, 0, translate_path_bitmap},
 };
 
-constexpr s_tool_import_definations_const image_import_with_type_defs[] = {
+constexpr s_tool_import_definitions_const image_import_with_type_defs[] = {
 	{"tif", image_import_with_type_proc, 0, translate_path_bitmap},
 	{"tiff", image_import_with_type_proc, 0, translate_path_bitmap},
 	{"tga", image_import_with_type_proc, 0, translate_path_bitmap},

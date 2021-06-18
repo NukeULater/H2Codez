@@ -36,12 +36,12 @@ static bool TAG_FILE_CHECK_IS_WRITEABLE(datum TAG, bool suppress_error = false)
 
 typedef bool (*find_tag_comparison)(void *element, void *find_data);
 
-static char load_model_object_definations_(tag_block_ref *IMPORT_INFO_OFFSET_, void *proc_definations_, __int16 proc_count, file_reference& FILE_REF_)
+static char load_model_object_definitions_(tag_block_ref *IMPORT_INFO_OFFSET_, void *proc_definitions_, __int16 proc_count, file_reference& FILE_REF_)
 {
-	typedef char(_cdecl* _load_model_object_definations_)(tag_block_ref *, void *, __int16, file_reference&);
-	static _load_model_object_definations_ load_model_object_definations_ = CAST_PTR(_load_model_object_definations_, 0x412E00);
+	typedef char(_cdecl* _load_model_object_definitions_)(tag_block_ref *, void *, __int16, file_reference&);
+	static _load_model_object_definitions_ load_model_object_definitions_ = CAST_PTR(_load_model_object_definitions_, 0x412E00);
 
-	return load_model_object_definations_(IMPORT_INFO_OFFSET_, proc_definations_, proc_count, FILE_REF_);
+	return load_model_object_definitions_(IMPORT_INFO_OFFSET_, proc_definitions_, proc_count, FILE_REF_);
 }
 static bool tool_build_paths(wcstring directory, const char* Subfolder, file_reference& out_reference, wchar_t out_path[256], wchar_t (*tag_path)[256] = nullptr)
 {
@@ -49,9 +49,9 @@ static bool tool_build_paths(wcstring directory, const char* Subfolder, file_ref
 	static const _tool_build_paths tool_build_paths = CAST_PTR(_tool_build_paths, 0x4119B0);
 	return tool_build_paths(directory, Subfolder, out_reference, out_path, tag_path);
 }
-static bool use_import_definitions(const s_tool_import_definations* definitions, int count, file_reference& reference, void* context_data, bool unk = false)
+static bool use_import_definitions(const s_tool_import_definitions* definitions, int count, file_reference& reference, void* context_data, bool unk = false)
 {
-	typedef bool(_cdecl* _use_import_definitions)(const s_tool_import_definations*, int, file_reference&, void*, DWORD);
+	typedef bool(_cdecl* _use_import_definitions)(const s_tool_import_definitions*, int, file_reference&, void*, DWORD);
 	static const _use_import_definitions use_import_definitions = CAST_PTR(_use_import_definitions, 0x412100);
 	return use_import_definitions(definitions, count, reference, context_data, unk);
 }
